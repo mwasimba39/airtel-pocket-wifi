@@ -74,7 +74,7 @@ export default function Contact() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                placeholder="John Doe"
+                placeholder="Erick Yusuph"
               />
             </div>
             
