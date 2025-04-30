@@ -6,6 +6,7 @@ export default function Contact() {
     name: '',
     email: '',
     phone: '',
+    subject: '', // New field
     message: ''
   });
 
@@ -19,15 +20,31 @@ export default function Contact() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Netlify form handling
+    
+    // Prepare form data for Netlify
     const form = e.target;
+    const formData = new FormData(form);
+    
     fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(new FormData(form)).toString(),
+      body: new URLSearchParams(formData).toString(),
     })
-    .then(() => alert('Thank you! We will contact you soon.'))
-    .catch(error => alert(error));
+    .then(() => {
+      alert('Thank you! We will contact you soon.');
+      // Reset form after successful submission
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      });
+    })
+    .catch(error => {
+      alert('Error submitting form. Please try again or contact us directly.');
+      console.error(error);
+    });
   };
 
   return (
@@ -39,13 +56,17 @@ export default function Contact() {
             name="contact" 
             method="POST" 
             data-netlify="true"
+            data-netlify-honeypot="bot-field"
             onSubmit={handleSubmit}
             className="contact-form"
           >
+            {/* Netlify Form Requirements */}
             <input type="hidden" name="form-name" value="contact" />
+            <input type="hidden" name="bot-field" />
             
+            {/* Customer Information Fields */}
             <div className="form-group">
-              <label htmlFor="name">Full Name</label>
+              <label htmlFor="name">Full Name*</label>
               <input
                 type="text"
                 id="name"
@@ -53,11 +74,12 @@ export default function Contact() {
                 value={formData.name}
                 onChange={handleChange}
                 required
+                placeholder="John Doe"
               />
             </div>
             
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">Email Address*</label>
               <input
                 type="email"
                 id="email"
@@ -65,11 +87,12 @@ export default function Contact() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                placeholder="your@email.com"
               />
             </div>
             
             <div className="form-group">
-              <label htmlFor="phone">Phone Number</label>
+              <label htmlFor="phone">Phone Number*</label>
               <input
                 type="tel"
                 id="phone"
@@ -77,11 +100,25 @@ export default function Contact() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
+                placeholder="+255 XXX XXX XXX"
               />
             </div>
             
             <div className="form-group">
-              <label htmlFor="message">Message</label>
+              <label htmlFor="subject">Subject</label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                placeholder="What's this about?"
+              />
+            </div>
+            
+            {/* Message Field */}
+            <div className="form-group">
+              <label htmlFor="message">Your Message*</label>
               <textarea
                 id="message"
                 name="message"
@@ -89,25 +126,32 @@ export default function Contact() {
                 value={formData.message}
                 onChange={handleChange}
                 required
+                placeholder="Please describe your inquiry in detail..."
               ></textarea>
             </div>
             
-            <button type="submit" className="submit-button">Send Message</button>
+            <button type="submit" className="submit-button">
+              Send Message
+            </button>
           </form>
           
           <div className="contact-info">
             <h3>Direct Contact</h3>
             <p>
               <strong>Email:</strong> 
-              <a href="mailto:mwasimbalutengano6@gmail.com">erickyusuphmyete@gmail.com</a>
+              <a href="mailto:erickyusuphmyete@gmail.com">erickyusuphmyete@gmail.com</a>
             </p>
             <p>
               <strong>Phone:</strong> 
-              <a href="tel:+255759371766">+255 655 750 791</a>
+              <a href="tel:+255655750791">+255 655 750 791</a>
             </p>
             <p>
               <strong>Address:</strong> 
               Mbeya, Tanzania
+            </p>
+            <p>
+              <strong>Business Hours:</strong> 
+              8:00 AM - 5:00 PM, Monday - Saturday
             </p>
           </div>
         </div>
